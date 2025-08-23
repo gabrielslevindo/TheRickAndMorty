@@ -123,7 +123,72 @@ Run ▶️
 - Internacionalização (i18n)
 - Mais testes instrumentados e UI
 
-***📸 Capturas de Tela***
+***📸 Capturas de Tela e Video***
+
+> Video do App completo em funcionamento:
+
+
+
+https://github.com/user-attachments/assets/f3ba5b53-0675-4a7d-b302-61fbabb810a2
+
+
+
+
+> Lista de Personagens:
+
+
+<img width="220" height="1525" alt="foto1" src="https://github.com/user-attachments/assets/7b8669bb-b33f-4d97-a44f-b192458c40e4" />
+
+
+> Tela de Detalhe:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003427" src="https://github.com/user-attachments/assets/f4874876-124e-4da5-9c11-4d4809eb8129" />
+
+
+> Tela de Favoritos:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_002938" src="https://github.com/user-attachments/assets/302b0d85-8548-466f-b667-ad8e45b85533" />
+
+
+> Tela de Favoritos Vazia:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_002954" src="https://github.com/user-attachments/assets/05ab5dcf-0e93-40e4-8a5c-948792618b16" />
+
+
+> Tela de Pesquisa:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003010" src="https://github.com/user-attachments/assets/ffaec09d-4f72-486f-8ea7-97ae3c086043" />
+
+
+> Tela de Pesquisa com uma Pesquisa:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003032" src="https://github.com/user-attachments/assets/cca13623-fd04-4985-b26e-6fc78b629269" />
+
+
+> Tela de Pesquisa com o Alive selecionado:
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003053" src="https://github.com/user-attachments/assets/34161ab8-baf9-47aa-90df-647c54f1c19c" />
+
+
+> Tela de Pesquisa com o Dead selecionado:
+
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003104" src="https://github.com/user-attachments/assets/244e431d-d7f6-422a-9819-74e748fcd970" />
+
+
+
+> Tela de Pesquisa com o Unknown selecionado:
+
+
+
+<img width="220" height="1525" alt="Screenshot_20250823_003114" src="https://github.com/user-attachments/assets/3f68de43-bfa2-4152-a2f8-7d3919c44164" />
 
 
 
