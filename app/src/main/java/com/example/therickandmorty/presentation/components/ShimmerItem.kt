@@ -18,34 +18,39 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShimmerItem() {
-    val shimmerColors = listOf(
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-    )
+fun shimmerItem() {
+    val shimmerColors =
+        listOf(
+            MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+            MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+        )
 
     val transition = rememberInfiniteTransition()
-    val translateAnimState = transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = LinearEasing)
+    val translateAnimState =
+        transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1000f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(1200, easing = LinearEasing),
+                ),
         )
-    )
 
     val translateAnim = translateAnimState.value
 
-    val brush = Brush.linearGradient(
-        colors = shimmerColors,
-        start = Offset(translateAnim, translateAnim),
-        end = Offset(translateAnim + 200f, translateAnim + 200f)
-    )
+    val brush =
+        Brush.linearGradient(
+            colors = shimmerColors,
+            start = Offset(translateAnim, translateAnim),
+            end = Offset(translateAnim + 200f, translateAnim + 200f),
+        )
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(brush = brush, shape = RoundedCornerShape(8.dp))
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(brush = brush, shape = RoundedCornerShape(8.dp)),
     )
 }

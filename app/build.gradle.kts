@@ -3,12 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
-    id("org.jmailen.kotlinter") version "5.0.2"
+    id("org.jmailen.kotlinter") version "5.2.0"
 
 }
 
 kotlinter {
-    ignoreLintFailures = true
+    ignoreLintFailures = false
     reporters = arrayOf("checkstyle", "plain")
 }
 
@@ -131,4 +131,5 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.core.testing)
     androidTestImplementation(libs.runner)
+    testImplementation(kotlin("test"))
 }

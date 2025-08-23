@@ -27,9 +27,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
 
-@Suppress("FunctionNaming")
 @Composable
-fun CharacterListItem(
+fun characterListItem(
     character: CharacterDto,
     onItemClick: (CharacterDto) -> Unit,
 ) {

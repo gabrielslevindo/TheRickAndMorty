@@ -9,16 +9,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
-import com.example.therickandmorty.presentation.screens.MainScreen
 import com.example.therickandmorty.presentation.screens.SplashScreen
-import com.example.therickandmorty.presentation.ui.theme.TheRickAndMortyTheme
+import com.example.therickandmorty.presentation.ui.theme.theRickAndMortyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TheRickAndMortyTheme {
+            theRickAndMortyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,

@@ -7,7 +7,15 @@ import com.example.therickandmorty.data.remote.dtos.CharacterResponseDto
 import com.example.therickandmorty.data.remote.dtos.InfoDto
 import com.example.therickandmorty.domain.dataclass.CharacterData
 import com.example.therickandmorty.domain.repository.CharacterRepositoryImpl
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,9 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
 
-@Suppress("FunctionNaming")
 @Composable
-fun CharacterList(
+fun characterList(
     isPaged: Boolean,
     pagedCharacters: LazyPagingItems<CharacterDto>? = null,
     listCharacters: List<CharacterDto>? = null,
@@ -37,7 +35,7 @@ fun CharacterList(
             items(pagedCharacters!!.itemCount) { index ->
                 val character = pagedCharacters[index]
                 character?.let {
-                    CharacterListItem(character = it, onItemClick = onItemClick)
+                    characterListItem(character = it, onItemClick = onItemClick)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -51,7 +49,7 @@ fun CharacterList(
                                 .padding(16.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        ShimmerItem()
+                        shimmerItem()
                     }
                 }
             }
@@ -62,7 +60,7 @@ fun CharacterList(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             listCharacters?.forEach { character ->
-                CharacterListItem(character = character, onItemClick = onItemClick)
+                characterListItem(character = character, onItemClick = onItemClick)
             }
         }
     }

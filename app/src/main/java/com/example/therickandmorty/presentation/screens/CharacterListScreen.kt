@@ -15,7 +15,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.therickandmorty.presentation.components.CharacterList
+import com.example.therickandmorty.presentation.components.characterList
 import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -47,7 +47,7 @@ object CharacterListScreen : Screen {
                         modifier = Modifier.align(Alignment.Center),
                     )
                 } else {
-                    CharacterList(
+                    characterList(
                         isPaged = true,
                         pagedCharacters = characters,
                     ) { character ->

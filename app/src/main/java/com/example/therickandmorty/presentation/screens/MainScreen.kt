@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
-import com.example.therickandmorty.presentation.components.BottomNavigationBar
+import com.example.therickandmorty.presentation.components.bottomNavigationBar
 
 object MainScreen : Screen {
     @Composable
@@ -21,7 +21,7 @@ object MainScreen : Screen {
                         currentScreen is FavoriteScreen ||
                         currentScreen is SearchScreen
                     ) {
-                        BottomNavigationBar(navigator)
+                        bottomNavigationBar(navigator)
                     }
                 },
             ) { innerPadding ->

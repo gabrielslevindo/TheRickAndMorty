@@ -34,7 +34,7 @@ class SearchViewModel(
         loadCharacters()
     }
 
-     fun loadCharacters() {
+    fun loadCharacters() {
         viewModelScope.launch {
             val pager =
                 Pager(

@@ -20,9 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@Suppress("FunctionNaming")
 @Composable
-fun StatusFilter(
+fun statusFilter(
     statuses: List<String>,
     selectedStatus: String,
     onStatusSelected: (String) -> Unit,

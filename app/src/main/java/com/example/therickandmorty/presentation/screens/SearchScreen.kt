@@ -1,12 +1,21 @@
-@file:Suppress("FunctionNaming", "NoWildcardImports")
-
 package com.example.therickandmorty.presentation.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -19,15 +28,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.presentation.components.CharacterList
-import com.example.therickandmorty.presentation.components.NameFilterField
-import com.example.therickandmorty.presentation.components.ShimmerItem
-import com.example.therickandmorty.presentation.components.StatusFilter
+import com.example.therickandmorty.presentation.components.characterList
+import com.example.therickandmorty.presentation.components.nameFilterField
+import com.example.therickandmorty.presentation.components.shimmerItem
+import com.example.therickandmorty.presentation.components.statusFilter
 import com.example.therickandmorty.presentation.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 object SearchScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -68,14 +77,14 @@ object SearchScreen : Screen {
                         .padding(innerPadding)
                         .padding(16.dp),
             ) {
-                NameFilterField(
+                nameFilterField(
                     value = nameFilter,
                     onValueChange = { newName ->
-                        nameFilter  = newName
+                        nameFilter = newName
                         viewModel.applyFilters(nameFilter, selectedStatusFilter)
                     },
                 )
-                StatusFilter(
+                statusFilter(
                     statuses = characterStatusList,
                     selectedStatus = selectedStatusFilter,
                     onStatusSelected = { status ->
@@ -89,7 +98,7 @@ object SearchScreen : Screen {
                 Box(modifier = Modifier.fillMaxSize()) {
                     when {
                         characters.loadState.refresh is LoadState.Loading -> {
-                            ShimmerItem()
+                            shimmerItem()
                         }
                         characters.loadState.refresh is LoadState.Error -> {
                             val e = characters.loadState.refresh as LoadState.Error
@@ -100,7 +109,7 @@ object SearchScreen : Screen {
                             )
                         }
                         else -> {
-                            CharacterList(
+                            characterList(
                                 isPaged = true,
                                 pagedCharacters = characters,
                             ) { character ->

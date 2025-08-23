@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@Suppress("FunctionNaming")
 @Composable
-fun NameFilterField(
+fun nameFilterField(
     value: String,
     onValueChange: (String) -> Unit,
 ) {

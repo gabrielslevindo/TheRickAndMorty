@@ -15,9 +15,8 @@ import com.example.therickandmorty.presentation.screens.CharacterListScreen
 import com.example.therickandmorty.presentation.screens.FavoriteScreen
 import com.example.therickandmorty.presentation.screens.SearchScreen
 
-@Suppress("FunctionNaming")
 @Composable
-fun BottomNavigationBar(navigator: Navigator) {
+fun bottomNavigationBar(navigator: Navigator) {
     val currentScreen = navigator.lastItem
 
     NavigationBar(
