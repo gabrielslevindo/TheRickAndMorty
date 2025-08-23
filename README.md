@@ -13,7 +13,8 @@ Ele consome a API pública do Rick & Morty, permite listar personagens, visualiz
 - ⭐ **Favoritos**: marcar e desmarcar personagens favoritos  
 - 🧱 **Persistência local** usando Room Database  
 - ⚡ **Paginação** para carregar personagens de forma eficiente  
-- 🧪 **Testes unitários** para repository e viewmodels  
+- 🧪 **Testes unitários** para repository e viewmodels
+- ✅ Lint Kotlin: o projeto respeita todas as regras do Lint usando kotlinter, incluindo convenções de nomenclatura. As funções @Composable estão com letras minúsculas conforme recomendado pelo Compose para se adequar às regras do Lint.
 
 ---
 
