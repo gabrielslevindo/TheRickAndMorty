@@ -23,7 +23,6 @@ object SplashScreen : Screen {
         var startAnimation by remember { mutableStateOf(false) }
         var navigateToMain by remember { mutableStateOf(false) }
 
-        // Fade-in do logo
         val alphaAnim by animateFloatAsState(
             targetValue = if (startAnimation) 1f else 0f,
             animationSpec = tween(durationMillis = 1000)
