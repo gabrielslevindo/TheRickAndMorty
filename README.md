@@ -66,12 +66,12 @@ data/
 | Paginação            | Paging 3 (runtime + compose)                           | [Docs](https://developer.android.com/topic/libraries/architecture/paging)   |
 | DI                   | Koin (core, android, compose)                          | [Docs](https://insert-koin.io/)                                             |
 | Networking           | Retrofit + Gson Converter                               | [Docs Retrofit](https://square.github.io/retrofit/) / [Gson](https://github.com/google/gson) |
-| Logging              | OkHttp + Logging Interceptor                            | [Docs](https://square.github.io/okhttp/)                                     |
+| Logging              | Logging Interceptor                            | [Docs](https://square.github.io/okhttp/)                                     |
 | Serialização         | Kotlin Serialization JSON                               | [Docs](https://kotlinlang.org/docs/serialization.html)                       |
 | Coroutines            | Kotlin Coroutines Core + Android                        | [Docs](https://kotlinlang.org/docs/coroutines-overview.html)                |
 | Banco de Dados       | Room Database + Kapt Compiler                           | [Docs](https://developer.android.com/jetpack/androidx/releases/room)        |
 | Testes Unitários     | JUnit 4/5, MockK, Coroutine Test, Core Testing         | [JUnit](https://junit.org/junit5/), [MockK](https://mockk.io/)              |
-| Voyager              | Voyager Navigator + ScreenModel + Koin integration     | [Docs](https://voyager.adevinta.com/)                                       |
+| Voyager              | Voyager Navigator + ScreenModel + Koin integration     | [Docs](https://voyager.adriel.cafe/)                                       |
 | Android Core         | androidx.core.ktx, lifecycle.runtime, activity          | [Docs](https://developer.android.com/kotlin/ktx)                             |
 
 ---
@@ -193,7 +193,7 @@ https://github.com/user-attachments/assets/f3ba5b53-0675-4a7d-b302-61fbabb810a2
 
 
 🧑‍💻 Autor
-Gabriel Levindo – [GitHub](https://github.com/gabrielslevindo) – [LinkedIn](www.linkedin.com/in/gabrielslevindo)
+Gabriel Levindo – [GitHub](https://github.com/gabrielslevindo) – [LinkedIn](https://www.linkedin.com/in/gabrielslevindo/)
 
 ***License***
 
