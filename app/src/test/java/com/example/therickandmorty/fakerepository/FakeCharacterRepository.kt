@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeCharacterRepository : CharacterRepository {
+    var shouldThrowOnGetAllFavorites = false
+    var getAllFavoritesException: RuntimeException? = null
+
     private val favorites = mutableListOf<CharacterData>()
 
     override suspend fun getCharacters(page: Int): CharacterResponseDto =

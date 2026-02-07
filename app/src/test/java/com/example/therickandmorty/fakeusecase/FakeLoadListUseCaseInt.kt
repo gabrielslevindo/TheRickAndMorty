@@ -6,11 +6,32 @@ import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class FakeLoadListUseCaseInt(
-    private val characters: List<CharacterDto>,
-) : LoadListUseCaseInt {
+class FakeLoadListUseCase : LoadListUseCaseInt {
+    var receivedName: String? = null
+    var receivedStatus: String? = null
+
     override fun execute(
         name: String?,
         status: String?,
-    ): Flow<PagingData<CharacterDto>> = flowOf(PagingData.from(characters))
+    ): Flow<PagingData<CharacterDto>> {
+        receivedName = name
+        receivedStatus = status
+        return flowOf(PagingData.empty())
+    }
+}
+
+class FakeLoadListUseCaseCharacter : LoadListUseCaseInt {
+    var callCount = 0
+    var receivedName: String? = null
+    var receivedStatus: String? = null
+
+    override fun execute(
+        name: String?,
+        status: String?,
+    ): Flow<PagingData<CharacterDto>> {
+        callCount++
+        receivedName = name
+        receivedStatus = status
+        return flowOf(PagingData.empty())
+    }
 }

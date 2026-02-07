@@ -4,7 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
     id("org.jmailen.kotlinter") version "5.2.0"
+    id("jacoco")
+}
 
+jacoco {
+    toolVersion = "0.8.10"
 }
 
 kotlinter {
@@ -34,6 +38,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            isTestCoverageEnabled = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -132,7 +139,107 @@ dependencies {
     testImplementation(libs.core.testing)
     androidTestImplementation(libs.runner)
     testImplementation(kotlin("test"))
-    testImplementation("androidx.paging:paging-testing:3.2.1")
-    testImplementation("app.cash.turbine:turbine:1.1.0")
+    testImplementation(libs.androidx.paging.testing)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test.v173)
+    testImplementation(libs.turbine.v100)
+    testImplementation(libs.androidx.paging.common)
+    testImplementation(libs.mockk.v11310)
 
 }
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    val fileFilter =
+        listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "android/**/*.*",
+
+            "**/*Test*.*",
+
+            // UI / Compose
+            "**/*Activity*.*",
+            "**/*Fragment*.*",
+            "**/*Composable*.*",
+            "**/*Screen*.*",
+
+            // DI / Generated
+            "**/*Hilt*.*",
+            "**/*Module*.*",
+            "**/*Factory*.*",
+            "**/*_Factory*.*",
+            "**/*_MembersInjector*.*",
+
+            // Paging
+            "**/*PagingSource*.*",
+        )
+
+    val kotlinClasses = fileTree(
+        mapOf(
+            "dir" to "$buildDir/tmp/kotlin-classes/debug",
+            "excludes" to fileFilter,
+        ),
+    )
+
+    val javaClasses = fileTree(
+        mapOf(
+            "dir" to "$buildDir/intermediates/javac/debug/classes",
+            "excludes" to fileFilter,
+        ),
+    )
+
+    classDirectories.setFrom(files(kotlinClasses, javaClasses))
+
+    sourceDirectories.setFrom(
+        files(
+            "src/main/java",
+            "src/main/kotlin",
+        ),
+    )
+
+    executionData.setFrom(
+        fileTree(buildDir) {
+            include(
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            )
+        },
+    )
+}
+tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    dependsOn("jacocoTestReport")
+
+    violationRules {
+        rule {
+            element = "CLASS"
+            includes = listOf(
+                "com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel",
+                "com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel",
+                "com.example.therickandmorty.presentation.viewmodel.SearchViewModel",
+                "com.example.therickandmorty.data.repository.CharacterRepositoryImpl",
+                "com.example.therickandmorty.domain.usecase.LoadListUseCaseIntImpl",
+            )
+
+            limit {
+                counter = "INSTRUCTION"
+                value = "COVEREDRATIO"
+                minimum = "0.90".toBigDecimal()
+            }
+        }
+    }
+
+
+    classDirectories.setFrom(tasks.named<JacocoReport>("jacocoTestReport").get().classDirectories)
+    sourceDirectories.setFrom(tasks.named<JacocoReport>("jacocoTestReport").get().sourceDirectories)
+    executionData.setFrom(tasks.named<JacocoReport>("jacocoTestReport").get().executionData)
+}
+

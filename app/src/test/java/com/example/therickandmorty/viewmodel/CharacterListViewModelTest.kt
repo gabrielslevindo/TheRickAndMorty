@@ -1,65 +1,95 @@
 package com.example.therickandmorty.viewmodel
 
-import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.data.remote.dtos.LocationDto
-import com.example.therickandmorty.data.remote.dtos.OriginDto
-import com.example.therickandmorty.fakeusecase.FakeLoadListUseCaseInt
+import com.example.therickandmorty.dispatcher.MainDispatcherRule
+import com.example.therickandmorty.fakeusecase.FakeLoadListUseCaseCharacter
 import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CharacterListViewModelTest {
+    @get:Rule
+    val dispatcherRule = MainDispatcherRule()
+
+    private lateinit var fakeUseCase: FakeLoadListUseCaseCharacter
     private lateinit var viewModel: CharacterListViewModel
 
     @Before
     fun setup() {
-        val fakeCharacters = createMockCharacters()
-        val fakeUseCase = FakeLoadListUseCaseInt(fakeCharacters)
-
-        viewModel = CharacterListViewModel(loadListUseCaseInt = fakeUseCase)
+        fakeUseCase = FakeLoadListUseCaseCharacter()
+        viewModel = CharacterListViewModel(fakeUseCase)
     }
 
     @Test
-    fun `loadCharacters should expose flow from use case`() =
+    fun `use case is not called before state is collected`() {
         runTest {
-            val charactersFlow = viewModel.state.value.characters
-
-            assertNotNull(charactersFlow)
+            assertEquals(0, fakeUseCase.callCount)
         }
-}
+    }
 
-private fun createMockCharacters(): List<CharacterDto> =
-    listOf(
-        CharacterDto(
-            id = 1,
-            name = "Character 1",
-            status = "alive",
-            species = "human",
-            type = "",
-            gender = "male",
-            origin = OriginDto("Earth", ""),
-            location = LocationDto("Earth", ""),
-            image = "image1.jpg",
-            episode = emptyList(),
-            url = "",
-            created = "",
-        ),
-        CharacterDto(
-            id = 2,
-            name = "Character 2",
-            status = "dead",
-            species = "alien",
-            type = "",
-            gender = "female",
-            origin = OriginDto("Mars", ""),
-            location = LocationDto("Mars", ""),
-            image = "image2.jpg",
-            episode = emptyList(),
-            url = "",
-            created = "",
-        ),
-    )
+    @Test
+    fun `use case is called when state is collected`() {
+        runTest {
+            val job =
+                launch {
+                    viewModel.state.collect { }
+                }
+
+            advanceUntilIdle()
+
+            assertEquals(1, fakeUseCase.callCount)
+            assertNull(fakeUseCase.receivedName)
+            assertNull(fakeUseCase.receivedStatus)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `state characters is updated after loadCharacters`() {
+        runTest {
+            val initialCharacters = viewModel.state.value.characters
+
+            val job =
+                launch {
+                    viewModel.state.collect { }
+                }
+
+            advanceUntilIdle()
+
+            val updatedCharacters = viewModel.state.value.characters
+
+            assertNotSame(initialCharacters, updatedCharacters)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `use case is not called multiple times while subscribed`() {
+        runTest {
+            val job =
+                launch {
+                    viewModel.state.collect { }
+                }
+
+            advanceUntilIdle()
+
+            assertEquals(1, fakeUseCase.callCount)
+
+            advanceUntilIdle()
+
+            assertEquals(1, fakeUseCase.callCount)
+
+            job.cancel()
+        }
+    }
+}

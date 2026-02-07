@@ -17,7 +17,6 @@ class SearchViewModel(
     private val loadListUseCaseInt: LoadListUseCaseInt,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SearchState(characters = flowOf(PagingData.empty())))
-
     val state: StateFlow<SearchState> = _state.asStateFlow()
 
     fun onAction(action: SearchAction) {

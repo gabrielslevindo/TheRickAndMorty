@@ -98,7 +98,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun `getCharacters should return character response from API`() =
+    fun `getCharacters should return character response from API`() {
         runBlocking {
             val expectedResponse = createMockCharacterResponse()
             coEvery { characterApi.getCharacters(any()) } returns expectedResponse
@@ -108,21 +108,29 @@ class CharacterRepositoryTest {
             assertEquals(expectedResponse, actualResponse)
             coVerify { characterApi.getCharacters(1) }
         }
+    }
 
     @Test
-    fun `getFilteredCharacters should return filtered character response from API`() =
+    fun `getFilteredCharacters should return filtered character response from API`() {
         runBlocking {
             val expectedResponse = createMockCharacterResponse()
-            coEvery { characterApi.getFilteredCharacters(any(), any(), any()) } returns expectedResponse
+            coEvery {
+                characterApi.getFilteredCharacters(
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns expectedResponse
 
             val actualResponse = repository.getFilteredCharacters(1, "name", "alive")
 
             assertEquals(expectedResponse, actualResponse)
             coVerify { characterApi.getFilteredCharacters(1, "name", "alive") }
         }
+    }
 
     @Test
-    fun `insertFavorite should call DAO insertCharacter`() =
+    fun `insertFavorite should call DAO insertCharacter`() {
         runBlocking {
             val character =
                 CharacterData(1, "Character 1", "alive", "human", "male", "image1.jpg", type = "")
@@ -132,9 +140,10 @@ class CharacterRepositoryTest {
 
             coVerify { characterDao.insertCharacter(character) }
         }
+    }
 
     @Test
-    fun `deleteFavorite should call DAO deleteCharacterById`() =
+    fun `deleteFavorite should call DAO deleteCharacterById`() {
         runBlocking {
             coEvery { characterDao.deleteCharacterById(1) } just Runs
 
@@ -142,9 +151,10 @@ class CharacterRepositoryTest {
 
             coVerify { characterDao.deleteCharacterById(1) }
         }
+    }
 
     @Test
-    fun `isFavorite should return true if character exists in DAO`() =
+    fun `isFavorite should return true if character exists in DAO`() {
         runBlocking {
             coEvery { characterDao.getCharacterById(1) } returns
                 CharacterData(
@@ -162,9 +172,10 @@ class CharacterRepositoryTest {
             assertEquals(true, result)
             coVerify { characterDao.getCharacterById(1) }
         }
+    }
 
     @Test
-    fun `getAllFavorites should return flow from DAO`() =
+    fun `getAllFavorites should return flow from DAO`() {
         runBlocking {
             val favorites =
                 listOf(
@@ -197,4 +208,5 @@ class CharacterRepositoryTest {
             assertEquals(favorites, emitted.first())
             verify { characterDao.getAllFavorites() }
         }
+    }
 }

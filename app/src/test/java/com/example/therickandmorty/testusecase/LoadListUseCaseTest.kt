@@ -25,7 +25,7 @@ class LoadListUseCaseTest {
     }
 
     @Test
-    fun `execute with filters should emit filtered characters`() =
+    fun `execute with filters should emit filtered characters`() {
         runTest {
             val pagingData =
                 useCase.execute(
@@ -39,4 +39,5 @@ class LoadListUseCaseTest {
             assertEquals("Filtered Character", items.first().name)
             assertEquals("alive", items.first().status)
         }
+    }
 }
