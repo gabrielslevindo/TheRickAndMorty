@@ -7,13 +7,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeLoadListUseCaseInt(
-    private val characters: List<CharacterDto>
+    private val characters: List<CharacterDto>,
 ) : LoadListUseCaseInt {
-
     override fun execute(
         name: String?,
-        status: String?
-    ): Flow<PagingData<CharacterDto>> {
-        return flowOf(PagingData.from(characters))
-    }
+        status: String?,
+    ): Flow<PagingData<CharacterDto>> = flowOf(PagingData.from(characters))
 }

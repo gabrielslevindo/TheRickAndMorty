@@ -22,53 +22,56 @@ class FavoritesViewModel(
     private val repository: CharacterRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(FavoritesState())
-    val state = _state.onStart {
-        loadFavorites()
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
-        initialValue = FavoritesState()
-    )
+    val state =
+        _state
+            .onStart {
+                loadFavorites()
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
+                initialValue = FavoritesState(),
+            )
 
     fun onAction(action: FavoritesAction) {
         when (action) {
             is FavoritesAction.ToggleFavorite -> toggleFavorite(action.character)
-            is FavoritesAction.isFavorite -> checkIsFavorite(action.characterId)
-
+            is FavoritesAction.IsFavorite -> checkIsFavorite(action.characterId)
         }
     }
 
-    private fun loadFavorites() = viewModelScope.launch {
-        _state.update {
-            it.copy(
-                state = StateView(isLoading = true)
-            )
-        }
-        try {
-            repository.getAllFavorites().collect { favoritesList ->
-                val dtoList: List<CharacterDto> = favoritesList.map { it.toDto() }
+    private fun loadFavorites() =
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    state = StateView(isLoading = true),
+                )
+            }
+            try {
+                repository.getAllFavorites().collect { favoritesList ->
+                    val dtoList: List<CharacterDto> = favoritesList.map { it.toDto() }
 
+                    _state.update {
+                        it.copy(
+                            state =
+                                StateView(
+                                    successApiList = dtoList,
+                                    isLoading = false,
+                                ),
+                        )
+                    }
+                }
+            } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        state = StateView(
-                            successApiList = dtoList,
-                            isLoading = false
-                        )
+                        state =
+                            StateView(
+                                isError = e.message ?: "Erro ao carregar favoritos",
+                                isLoading = false,
+                            ),
                     )
                 }
             }
-        } catch (e: Exception) {
-
-            _state.update {
-                it.copy(
-                    state = StateView(
-                        isError = e.message ?: "Erro ao carregar favoritos",
-                        isLoading = false
-                    )
-                )
-            }
         }
-    }
 
     private fun toggleFavorite(character: CharacterData) {
         viewModelScope.launch {
@@ -88,15 +91,15 @@ class FavoritesViewModel(
 
     private fun checkIsFavorite(characterId: Int) {
         viewModelScope.launch {
-            val favorite = try {
-                repository.isFavorite(characterId)
-            } catch (e: Exception) {
-                false
-            }
+            val favorite =
+                try {
+                    repository.isFavorite(characterId)
+                } catch (e: Exception) {
+                    false
+                }
             _state.update {
                 it.copy(isFavorite = favorite)
             }
         }
     }
-
 }

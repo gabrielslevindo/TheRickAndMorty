@@ -35,7 +35,7 @@ val modules =
         }
         single<LoadListUseCaseInt> {
             LoadListUseCaseIntImpl(
-               repository = get()
+                repository = get(),
             )
         }
 

@@ -20,7 +20,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.presentation.components.AppHeader
+import com.example.therickandmorty.presentation.components.appHeader
 import com.example.therickandmorty.presentation.components.characterListItem
 import com.example.therickandmorty.presentation.components.shimmerItem
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
@@ -37,8 +37,8 @@ object FavoriteScreen : Screen {
 
         Scaffold(
             topBar = {
-                AppHeader(
-                    title = "Favorites"
+                appHeader(
+                    title = "Favorites",
                 )
             },
         ) { innerPadding ->

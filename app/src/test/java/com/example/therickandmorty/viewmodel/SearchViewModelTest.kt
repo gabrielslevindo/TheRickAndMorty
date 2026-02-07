@@ -15,7 +15,6 @@ import kotlin.test.assertNotNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelTest {
-
     private lateinit var viewModel: SearchViewModel
 
     private fun createCharacters(): List<CharacterDto> =
@@ -32,7 +31,7 @@ class SearchViewModelTest {
                 image = "",
                 episode = emptyList(),
                 url = "",
-                created = ""
+                created = "",
             ),
             CharacterDto(
                 id = 2,
@@ -46,8 +45,8 @@ class SearchViewModelTest {
                 image = "",
                 episode = emptyList(),
                 url = "",
-                created = ""
-            )
+                created = "",
+            ),
         )
 
     @Before
@@ -61,8 +60,8 @@ class SearchViewModelTest {
         viewModel.onAction(
             SearchAction.ApplyFilters(
                 name = "Rick",
-                status = "alive"
-            )
+                status = "alive",
+            ),
         )
 
         val state = viewModel.state.value
@@ -72,17 +71,16 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun `applyFilters should expose characters from use case`() = runTest {
-        viewModel.onAction(
-            SearchAction.ApplyFilters(
-                name = "Rick",
-                status = "alive"
+    fun `applyFilters should expose characters from use case`() =
+        runTest {
+            viewModel.onAction(
+                SearchAction.ApplyFilters(
+                    name = "Rick",
+                    status = "alive",
+                ),
             )
-        )
-        val charactersFlow = viewModel.state.value.characters
+            val charactersFlow = viewModel.state.value.characters
 
-        assertNotNull(charactersFlow)
-    }
-
+            assertNotNull(charactersFlow)
+        }
 }
-

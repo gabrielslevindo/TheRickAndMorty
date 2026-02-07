@@ -26,7 +26,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.therickandmorty.presentation.components.AppHeader
+import com.example.therickandmorty.presentation.components.appHeader
 import com.example.therickandmorty.presentation.components.characterList
 import com.example.therickandmorty.presentation.components.nameFilterField
 import com.example.therickandmorty.presentation.components.shimmerItem
@@ -40,21 +40,20 @@ object SearchScreen : Screen {
     @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-
         val viewModel: SearchViewModel = koinViewModel()
 
         val state by viewModel.state.collectAsStateWithLifecycle()
-        SearchScreenContent(
+        searchScreenContent(
             state = state,
-            action = viewModel::onAction
+            action = viewModel::onAction,
         )
     }
 }
 
 @Composable
-fun SearchScreenContent (
+fun searchScreenContent(
     state: SearchState,
-    action: (SearchAction) -> Unit
+    action: (SearchAction) -> Unit,
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -71,7 +70,7 @@ fun SearchScreenContent (
 
     Scaffold(
         topBar = {
-            AppHeader(title = "Characters")
+            appHeader(title = "Characters")
         },
     ) { innerPadding ->
         Column(
@@ -100,11 +99,12 @@ fun SearchScreenContent (
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(
-                modifier = Modifier
-                .padding(top = 8.dp)
-                .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                )
-                .background(MaterialTheme.colorScheme.background)) {
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        .background(MaterialTheme.colorScheme.background),
+            ) {
                 when {
                     characters.loadState.refresh is LoadState.Loading -> {
                         shimmerItem()

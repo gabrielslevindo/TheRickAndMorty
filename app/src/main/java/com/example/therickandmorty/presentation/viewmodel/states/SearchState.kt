@@ -7,6 +7,5 @@ import kotlinx.coroutines.flow.Flow
 data class SearchState(
     val name: String? = null,
     val status: String? = null,
-    val characters: Flow<PagingData<CharacterDto>>
+    val characters: Flow<PagingData<CharacterDto>>,
 )
-

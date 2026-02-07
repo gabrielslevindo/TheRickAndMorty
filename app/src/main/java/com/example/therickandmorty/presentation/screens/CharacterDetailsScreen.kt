@@ -45,7 +45,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import com.example.therickandmorty.data.local.extensions.toData
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.presentation.components.AppHeader
+import com.example.therickandmorty.presentation.components.appHeader
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.actions.FavoritesAction
 import org.koin.androidx.compose.koinViewModel
@@ -62,12 +62,12 @@ data class CharacterDetailsScreen(
         val state by favoritesViewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(character.id) {
-            favoritesViewModel.onAction(FavoritesAction.isFavorite(characterId = character.id))
+            favoritesViewModel.onAction(FavoritesAction.IsFavorite(characterId = character.id))
         }
 
         Scaffold(
             topBar = {
-                AppHeader(
+                appHeader(
                     title = "Character Details",
                     showBack = true,
                     onBackClick = { navigator.pop() },
@@ -76,25 +76,26 @@ data class CharacterDetailsScreen(
                             onClick = {
                                 favoritesViewModel.onAction(
                                     FavoritesAction.ToggleFavorite(
-                                        character = character.toData()
-                                    )
+                                        character = character.toData(),
+                                    ),
                                 )
-                            }
+                            },
                         ) {
                             Icon(
                                 imageVector =
                                     if (state.isFavorite) Icons.Default.Check else Icons.Default.Add,
                                 contentDescription = if (state.isFavorite) "Favorito" else "Não favorito",
-                                tint = Color.Black
+                                tint = Color.Black,
                             )
                         }
-                    }
+                    },
                 )
-            }
+            },
         ) { innerPadding ->
-            CharacterDetailsContent(
-                modifier = Modifier
-                    .padding(top = innerPadding.calculateTopPadding()),
+            characterDetailsContent(
+                modifier =
+                    Modifier
+                        .padding(top = innerPadding.calculateTopPadding()),
                 character = character,
             )
         }
@@ -102,15 +103,16 @@ data class CharacterDetailsScreen(
 }
 
 @Composable
-fun CharacterDetailsContent(
+fun characterDetailsContent(
     modifier: Modifier = Modifier,
     character: CharacterDto,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.background),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(16.dp))
@@ -118,10 +120,11 @@ fun CharacterDetailsContent(
         AsyncImage(
             model = character.image,
             contentDescription = character.name,
-            modifier = Modifier
-                .size(280.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .shadow(8.dp),
+            modifier =
+                Modifier
+                    .size(280.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .shadow(8.dp),
             contentScale = ContentScale.Crop,
         )
 
@@ -135,40 +138,42 @@ fun CharacterDetailsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailsCard(character = character)
+        detailsCard(character = character)
 
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
 @Composable
-fun DetailsCard(character: CharacterDto) {
+fun detailsCard(character: CharacterDto) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
-
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 AssistChip(
                     onClick = {},
-                    colors = AssistChipDefaults.assistChipColors(
-                        containerColor =
-                            when (character.status.lowercase()) {
-                                "alive" -> Color.Green
-                                "dead" -> Color.Red
-                                else -> MaterialTheme.colorScheme.tertiary
-                            },
-                    ),
+                    colors =
+                        AssistChipDefaults.assistChipColors(
+                            containerColor =
+                                when (character.status.lowercase()) {
+                                    "alive" -> Color.Green
+                                    "dead" -> Color.Red
+                                    else -> MaterialTheme.colorScheme.tertiary
+                                },
+                        ),
                     label = {
                         Text(
                             text = character.status,
@@ -188,7 +193,6 @@ fun DetailsCard(character: CharacterDto) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
             Text(
                 "Species: ${character.species}",
                 fontSize = 18.sp,
@@ -203,4 +207,3 @@ fun DetailsCard(character: CharacterDto) {
         }
     }
 }
-

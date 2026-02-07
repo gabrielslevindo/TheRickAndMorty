@@ -58,79 +58,82 @@ class FavoritesViewModelTest {
     }
 
     @Test
-    fun `loadFavorites should update state with favorites`() = runTest {
-        val favorites = createCharacterDataList()
-        favorites.forEach { repository.insertFavorite(it) }
+    fun `loadFavorites should update state with favorites`() =
+        runTest {
+            val favorites = createCharacterDataList()
+            favorites.forEach { repository.insertFavorite(it) }
 
-        dispatcher.scheduler.advanceUntilIdle()
+            dispatcher.scheduler.advanceUntilIdle()
 
-        val finalState =
-            viewModel.state
-                .map { it.state }
-                .first { !it.isLoading }
+            val finalState =
+                viewModel.state
+                    .map { it.state }
+                    .first { !it.isLoading }
 
-
-        assertEquals(2, finalState.successApiList.size)
-        assertEquals("Character 1", finalState.successApiList[0].name)
-    }
-
-    @Test
-    fun `toggleFavorite should insert favorite when not already favorite`() = runTest {
-        val character = createCharacterDataList()[0]
-
-        viewModel.onAction(FavoritesAction.ToggleFavorite(character))
-
-        val finalState =
-            viewModel.state
-                .map { it.state }
-                .first { !it.isLoading }
-
-        assertEquals(1, finalState.successApiList.size)
-        assertEquals(character.id, finalState.successApiList.first().id)
-    }
+            assertEquals(2, finalState.successApiList.size)
+            assertEquals("Character 1", finalState.successApiList[0].name)
+        }
 
     @Test
-    fun `toggleFavorite should delete favorite when already favorite`() = runTest {
-        val character = createCharacterDataList()[0]
-        repository.insertFavorite(character)
+    fun `toggleFavorite should insert favorite when not already favorite`() =
+        runTest {
+            val character = createCharacterDataList()[0]
 
-        viewModel.onAction(
-            FavoritesAction.ToggleFavorite(character)
-        )
+            viewModel.onAction(FavoritesAction.ToggleFavorite(character))
 
-        dispatcher.scheduler.advanceUntilIdle()
+            val finalState =
+                viewModel.state
+                    .map { it.state }
+                    .first { !it.isLoading }
 
-        val stateView = viewModel.state.value.state
-
-        assertEquals(0, stateView.successApiList.size)
-    }
-
-    @Test
-    fun `checkIsFavorite should update state to true when character is favorite`() = runTest {
-        val character = createCharacterDataList()[0]
-        repository.insertFavorite(character)
-
-        viewModel.onAction(
-            FavoritesAction.isFavorite(character.id)
-        )
-
-        val isFavorite =
-            viewModel.state
-                .map { it.isFavorite }
-                .first { it }
-
-        assertEquals(true, isFavorite)
-    }
+            assertEquals(1, finalState.successApiList.size)
+            assertEquals(character.id, finalState.successApiList.first().id)
+        }
 
     @Test
-    fun `checkIsFavorite should update state to false when character is not favorite`() = runTest {
-        viewModel.onAction(
-            FavoritesAction.isFavorite(999)
-        )
+    fun `toggleFavorite should delete favorite when already favorite`() =
+        runTest {
+            val character = createCharacterDataList()[0]
+            repository.insertFavorite(character)
 
-        dispatcher.scheduler.advanceUntilIdle()
+            viewModel.onAction(
+                FavoritesAction.ToggleFavorite(character),
+            )
 
-        assertEquals(false, viewModel.state.value.isFavorite)
-    }
+            dispatcher.scheduler.advanceUntilIdle()
 
+            val stateView = viewModel.state.value.state
+
+            assertEquals(0, stateView.successApiList.size)
+        }
+
+    @Test
+    fun `checkIsFavorite should update state to true when character is favorite`() =
+        runTest {
+            val character = createCharacterDataList()[0]
+            repository.insertFavorite(character)
+
+            viewModel.onAction(
+                FavoritesAction.IsFavorite(character.id),
+            )
+
+            val isFavorite =
+                viewModel.state
+                    .map { it.isFavorite }
+                    .first { it }
+
+            assertEquals(true, isFavorite)
+        }
+
+    @Test
+    fun `checkIsFavorite should update state to false when character is not favorite`() =
+        runTest {
+            viewModel.onAction(
+                FavoritesAction.IsFavorite(999),
+            )
+
+            dispatcher.scheduler.advanceUntilIdle()
+
+            assertEquals(false, viewModel.state.value.isFavorite)
+        }
 }

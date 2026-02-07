@@ -21,7 +21,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.therickandmorty.presentation.components.AppHeader
+import com.example.therickandmorty.presentation.components.appHeader
 import com.example.therickandmorty.presentation.components.characterList
 import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -38,18 +38,20 @@ object CharacterListScreen : Screen {
             state.value.characters.collectAsLazyPagingItems()
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFEAF5EF))
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFEAF5EF)),
         ) {
-            AppHeader(title = "Characters")
+            appHeader(title = "Characters")
 
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 8.dp)
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .background(MaterialTheme.colorScheme.background)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        .background(MaterialTheme.colorScheme.background),
             ) {
                 characters.let {
                     if (
@@ -57,7 +59,7 @@ object CharacterListScreen : Screen {
                         characters.loadState.refresh is LoadState.Loading
                     ) {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
                         )
                     } else {
                         characterList(
@@ -65,7 +67,7 @@ object CharacterListScreen : Screen {
                             pagedCharacters = characters,
                         ) { character ->
                             navigator.push(
-                                CharacterDetailsScreen(character)
+                                CharacterDetailsScreen(character),
                             )
                         }
                     }
@@ -74,4 +76,3 @@ object CharacterListScreen : Screen {
         }
     }
 }
-

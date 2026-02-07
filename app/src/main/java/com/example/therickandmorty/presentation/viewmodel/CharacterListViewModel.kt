@@ -15,30 +15,29 @@ import kotlinx.coroutines.flow.update
 import kotlin.time.Duration.Companion.seconds
 
 class CharacterListViewModel(
-    private val loadListUseCaseInt: LoadListUseCaseInt
+    private val loadListUseCaseInt: LoadListUseCaseInt,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(CharacterListState())
-    val state: StateFlow<CharacterListState> = _state.onStart {
-        loadCharacters()
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
-        initialValue = CharacterListState()
-    )
+    val state: StateFlow<CharacterListState> =
+        _state
+            .onStart {
+                loadCharacters()
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
+                initialValue = CharacterListState(),
+            )
 
     private fun loadCharacters() {
         val charactersFlow =
             loadListUseCaseInt
                 .execute(
                     name = null,
-                    status = null
-                )
-                .cachedIn(viewModelScope)
+                    status = null,
+                ).cachedIn(viewModelScope)
 
         _state.update {
             it.copy(characters = charactersFlow)
         }
     }
-
 }

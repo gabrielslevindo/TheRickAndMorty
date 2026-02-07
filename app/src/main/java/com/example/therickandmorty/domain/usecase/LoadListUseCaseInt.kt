@@ -8,35 +8,32 @@ import com.example.therickandmorty.domain.repository.CharacterRepository
 import com.example.therickandmorty.presentation.paging.CharacterPagingSource
 import kotlinx.coroutines.flow.Flow
 
-
 interface LoadListUseCaseInt {
     fun execute(
         name: String?,
-        status: String?
+        status: String?,
     ): Flow<PagingData<CharacterDto>>
 }
 
-
 class LoadListUseCaseIntImpl(
-    private val repository: CharacterRepository
+    private val repository: CharacterRepository,
 ) : LoadListUseCaseInt {
-
     override fun execute(
         name: String?,
-        status: String?
-    ): Flow<PagingData<CharacterDto>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
+        status: String?,
+    ): Flow<PagingData<CharacterDto>> =
+        Pager(
+            config =
+                PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false,
+                ),
             pagingSourceFactory = {
                 CharacterPagingSource(
                     repository = repository,
                     name = name,
-                    status = status
+                    status = status,
                 )
-            }
+            },
         ).flow
-    }
 }

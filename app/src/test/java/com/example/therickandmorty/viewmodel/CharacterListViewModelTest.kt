@@ -13,7 +13,6 @@ import kotlin.test.assertNotNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CharacterListViewModelTest {
-
     private lateinit var viewModel: CharacterListViewModel
 
     @Before
@@ -25,14 +24,15 @@ class CharacterListViewModelTest {
     }
 
     @Test
-    fun `loadCharacters should expose flow from use case`() = runTest {
-        val charactersFlow = viewModel.state.value.characters
+    fun `loadCharacters should expose flow from use case`() =
+        runTest {
+            val charactersFlow = viewModel.state.value.characters
 
-        assertNotNull(charactersFlow)
-    }
+            assertNotNull(charactersFlow)
+        }
 }
 
-    private fun createMockCharacters(): List<CharacterDto> =
+private fun createMockCharacters(): List<CharacterDto> =
     listOf(
         CharacterDto(
             id = 1,
@@ -46,7 +46,7 @@ class CharacterListViewModelTest {
             image = "image1.jpg",
             episode = emptyList(),
             url = "",
-            created = ""
+            created = "",
         ),
         CharacterDto(
             id = 2,
@@ -60,6 +60,6 @@ class CharacterListViewModelTest {
             image = "image2.jpg",
             episode = emptyList(),
             url = "",
-            created = ""
-        )
+            created = "",
+        ),
     )

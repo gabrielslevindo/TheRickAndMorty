@@ -14,9 +14,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 
 class SearchViewModel(
-    private val loadListUseCaseInt: LoadListUseCaseInt
+    private val loadListUseCaseInt: LoadListUseCaseInt,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(SearchState(characters = flowOf(PagingData.empty())))
 
     val state: StateFlow<SearchState> = _state.asStateFlow()
@@ -29,12 +28,12 @@ class SearchViewModel(
 
     private fun applyFilters(
         name: String?,
-        status: String?
+        status: String?,
     ) {
         _state.update {
             it.copy(
                 name = name,
-                status = status
+                status = status,
             )
         }
         loadCharacters()
@@ -47,13 +46,11 @@ class SearchViewModel(
             loadListUseCaseInt
                 .execute(
                     name = current.name,
-                    status = current.status
-                )
-                .cachedIn(viewModelScope)
+                    status = current.status,
+                ).cachedIn(viewModelScope)
 
         _state.update {
             it.copy(characters = charactersFlow)
         }
     }
-
 }
