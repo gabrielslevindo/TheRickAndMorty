@@ -20,6 +20,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
 
       # 3️⃣ Permissão do Gradle
       - name: Grant execute permission for gradlew
@@ -29,21 +30,25 @@ jobs:
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
 
-      # 5️⃣ Lint (qualidade de código)
-      - name: Run lint
-        run: ./gradlew lint
+      # 5️⃣ Detekt
+      - name: Run Detekt
+        run: ./gradlew detekt
 
-      # 6️⃣ Gerar relatório JaCoCo
-      - name: Generate JaCoCo report
+      # 6️⃣ Kotlin Lint (style)
+      - name: Run Kotlin Lint
+        run: ./gradlew lintKotlin
+
+      # 7️⃣ JaCoCo (coverage + regra mínima)
+      - name: Run JaCoCo coverage
         run: ./gradlew jacocoTestReport jacocoTestCoverageVerification
 
-      # 7️⃣ Upload do relatório HTML
+      # 8️⃣ Upload do relatório JaCoCo
       - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: app/build/reports/jacoco/jacocoTestReport/html
 
-      # 8️⃣ Build do app
+      # 9️⃣ Build do APK debug
       - name: Build debug APK
         run: ./gradlew assembleDebug

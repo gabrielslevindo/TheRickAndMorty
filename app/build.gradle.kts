@@ -5,6 +5,25 @@ plugins {
     kotlin("kapt")
     id("org.jmailen.kotlinter") version "5.2.0"
     id("jacoco")
+        id("io.gitlab.arturbosch.detekt") version "1.23.6"
+}
+
+detekt {
+    toolVersion = "1.23.6"
+    buildUponDefaultConfig = true
+    allRules = false
+
+    config = files("$rootDir/config/detekt/detekt.yml")
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(false)
+    }
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = "17"
 }
 
 jacoco {
