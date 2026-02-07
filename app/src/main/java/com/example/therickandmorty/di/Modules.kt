@@ -6,6 +6,8 @@ import com.example.therickandmorty.data.remote.ApiService
 import com.example.therickandmorty.data.remote.CharacterApi
 import com.example.therickandmorty.domain.repository.CharacterRepository
 import com.example.therickandmorty.domain.repository.CharacterRepositoryImpl
+import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.domain.usecase.LoadListUseCaseIntImpl
 import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.SearchViewModel
@@ -31,7 +33,13 @@ val modules =
                 characterDao = get(),
             )
         }
-        factory { CharacterListViewModel(repository = get()) }
-        factory { SearchViewModel(repository = get()) }
+        single<LoadListUseCaseInt> {
+            LoadListUseCaseIntImpl(
+               repository = get()
+            )
+        }
+
+        factory { CharacterListViewModel(loadListUseCaseInt = get()) }
+        factory { SearchViewModel(loadListUseCaseInt = get()) }
         factory { FavoritesViewModel(repository = get()) }
     }

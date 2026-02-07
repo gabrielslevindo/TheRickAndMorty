@@ -1,107 +1,88 @@
 package com.example.therickandmorty.viewmodel
 
-import com.example.therickandmorty.data.local.extensions.toDto
-import com.example.therickandmorty.domain.dataclass.CharacterData
-import com.example.therickandmorty.fakerepository.FakeCharacterRepository
-import com.example.therickandmorty.presentation.states.StateView
-import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
-import kotlinx.coroutines.Dispatchers
+import com.example.therickandmorty.data.remote.dtos.CharacterDto
+import com.example.therickandmorty.data.remote.dtos.LocationDto
+import com.example.therickandmorty.data.remote.dtos.OriginDto
+import com.example.therickandmorty.fakeusecase.FakeLoadListUseCaseInt
+import com.example.therickandmorty.presentation.viewmodel.SearchViewModel
+import com.example.therickandmorty.presentation.viewmodel.actions.SearchAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertNotNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelTest {
-    private val dispatcher = StandardTestDispatcher()
-    private lateinit var repository: FakeCharacterRepository
-    private lateinit var viewModel: FavoritesViewModel
 
-    private fun createCharacterDataList(): List<CharacterData> =
+    private lateinit var viewModel: SearchViewModel
+
+    private fun createCharacters(): List<CharacterDto> =
         listOf(
-            CharacterData(
+            CharacterDto(
                 id = 1,
-                name = "Character 1",
+                name = "Rick",
                 status = "alive",
                 species = "human",
                 type = "",
                 gender = "male",
-                image = "image1.jpg",
+                origin = OriginDto("Earth", ""),
+                location = LocationDto("Earth", ""),
+                image = "",
+                episode = emptyList(),
+                url = "",
+                created = ""
             ),
-            CharacterData(
+            CharacterDto(
                 id = 2,
-                name = "Character 2",
-                status = "dead",
-                species = "alien",
+                name = "Morty",
+                status = "alive",
+                species = "human",
                 type = "",
-                gender = "female",
-                image = "image2.jpg",
-            ),
+                gender = "male",
+                origin = OriginDto("Earth", ""),
+                location = LocationDto("Earth", ""),
+                image = "",
+                episode = emptyList(),
+                url = "",
+                created = ""
+            )
         )
 
     @Before
     fun setup() {
-        Dispatchers.setMain(dispatcher)
-        repository = FakeCharacterRepository()
-        viewModel = FavoritesViewModel(repository)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        val fakeUseCase = FakeLoadListUseCaseInt(createCharacters())
+        viewModel = SearchViewModel(fakeUseCase)
     }
 
     @Test
-    fun `loadFavorites should update state with favorites`() =
-        runTest {
-            val favorites = createCharacterDataList()
-            favorites.forEach { repository.insertFavorite(it) }
-
-            viewModel.loadFavorites()
-            dispatcher.scheduler.advanceUntilIdle() // espera todas as coroutines terminarem
-
-            val expectedState =
-                StateView(
-                    SuccessApiList = favorites.map { it.toDto() }, // <- aqui está a correção
-                    isLoading = false,
-                    isError = null,
-                )
-
-            assertEquals(expectedState, viewModel.state.value)
-        }
-
-    @Test
-    fun `toggleFavorite should insert favorite when not already favorite`() =
-        runTest {
-            val character = createCharacterDataList()[0]
-
-            viewModel.toggleFavorite(character)
-
-            dispatcher.scheduler.advanceUntilIdle()
-
-            assertEquals(1, viewModel.state.value.SuccessApiList.size)
-            assertEquals(
-                character.id,
-                viewModel.state.value.SuccessApiList[0]
-                    .id,
+    fun `applyFilters should update name and status`() {
+        viewModel.onAction(
+            SearchAction.ApplyFilters(
+                name = "Rick",
+                status = "alive"
             )
-        }
+        )
+
+        val state = viewModel.state.value
+
+        assertEquals("Rick", state.name)
+        assertEquals("alive", state.status)
+    }
 
     @Test
-    fun `toggleFavorite should delete favorite when already favorite`() =
-        runTest {
-            val character = createCharacterDataList()[0]
-            repository.insertFavorite(character)
+    fun `applyFilters should expose characters from use case`() = runTest {
+        viewModel.onAction(
+            SearchAction.ApplyFilters(
+                name = "Rick",
+                status = "alive"
+            )
+        )
+        val charactersFlow = viewModel.state.value.characters
 
-            viewModel.toggleFavorite(character)
+        assertNotNull(charactersFlow)
+    }
 
-            dispatcher.scheduler.advanceUntilIdle()
-
-            assertEquals(0, viewModel.state.value.SuccessApiList.size)
-        }
 }
+

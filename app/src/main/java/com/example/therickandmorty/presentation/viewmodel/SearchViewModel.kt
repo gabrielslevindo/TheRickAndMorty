@@ -2,46 +2,58 @@ package com.example.therickandmorty.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.repository.CharacterRepository
-import com.example.therickandmorty.presentation.paging.CharacterPagingSource
+import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.presentation.viewmodel.actions.SearchAction
+import com.example.therickandmorty.presentation.viewmodel.states.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.update
 
 class SearchViewModel(
-    private val repository: CharacterRepository,
+    private val loadListUseCaseInt: LoadListUseCaseInt
 ) : ViewModel() {
-    private val _nameFilter = MutableStateFlow<String?>(null)
-    val nameFilter = _nameFilter.asStateFlow()
-    private val _statusFilter = MutableStateFlow<String?>(null)
-    val statusFilter = _statusFilter.asStateFlow()
 
-    private var _charactersFlow = MutableStateFlow<PagingData<CharacterDto>>(PagingData.empty())
-    val charactersFlow = _charactersFlow.asStateFlow()
+    private val _state = MutableStateFlow(SearchState(characters = flowOf(PagingData.empty())))
 
-    fun applyFilters(
+    val state: StateFlow<SearchState> = _state.asStateFlow()
+
+    fun onAction(action: SearchAction) {
+        when (action) {
+            is SearchAction.ApplyFilters -> applyFilters(action.name, action.status)
+        }
+    }
+
+    private fun applyFilters(
         name: String?,
-        status: String?,
+        status: String?
     ) {
-        _nameFilter.value = name
-        _statusFilter.value = status
+        _state.update {
+            it.copy(
+                name = name,
+                status = status
+            )
+        }
         loadCharacters()
     }
 
-    fun loadCharacters() {
-        viewModelScope.launch {
-            val pager =
-                Pager(
-                    config = PagingConfig(pageSize = 20),
-                    pagingSourceFactory = { CharacterPagingSource(repository, _nameFilter.value, _statusFilter.value) },
+    private fun loadCharacters() {
+        val current = _state.value
+
+        val charactersFlow =
+            loadListUseCaseInt
+                .execute(
+                    name = current.name,
+                    status = current.status
                 )
-            _charactersFlow.value = pager.flow.cachedIn(viewModelScope).first()
+                .cachedIn(viewModelScope)
+
+        _state.update {
+            it.copy(characters = charactersFlow)
         }
     }
+
 }

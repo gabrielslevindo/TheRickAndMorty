@@ -21,7 +21,7 @@ import com.example.therickandmorty.data.remote.dtos.CharacterDto
 @Composable
 fun characterList(
     isPaged: Boolean,
-    pagedCharacters: LazyPagingItems<CharacterDto>? = null,
+    pagedCharacters: LazyPagingItems<CharacterDto>,
     listCharacters: List<CharacterDto>? = null,
     onItemClick: (CharacterDto) -> Unit,
 ) {
@@ -32,7 +32,7 @@ fun characterList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
         ) {
-            items(pagedCharacters!!.itemCount) { index ->
+            items(pagedCharacters.itemCount) { index ->
                 val character = pagedCharacters[index]
                 character?.let {
                     characterListItem(character = it, onItemClick = onItemClick)

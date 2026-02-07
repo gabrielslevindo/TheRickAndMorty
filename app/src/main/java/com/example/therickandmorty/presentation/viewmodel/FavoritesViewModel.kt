@@ -7,53 +7,96 @@ import com.example.therickandmorty.data.remote.dtos.CharacterDto
 import com.example.therickandmorty.domain.dataclass.CharacterData
 import com.example.therickandmorty.domain.repository.CharacterRepository
 import com.example.therickandmorty.presentation.states.StateView
+import com.example.therickandmorty.presentation.viewmodel.actions.FavoritesAction
+import com.example.therickandmorty.presentation.viewmodel.states.FavoritesState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class FavoritesViewModel(
     private val repository: CharacterRepository,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(StateView())
-    val state = _state.asStateFlow()
+    private val _state = MutableStateFlow(FavoritesState())
+    val state = _state.onStart {
+        loadFavorites()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
+        initialValue = FavoritesState()
+    )
 
-    fun loadFavorites() =
-        viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, isError = null)
-            try {
-                repository.getAllFavorites().collect { favoritesList ->
-                    val dtoList: List<CharacterDto> = favoritesList.map { it.toDto() }
+    fun onAction(action: FavoritesAction) {
+        when (action) {
+            is FavoritesAction.ToggleFavorite -> toggleFavorite(action.character)
+            is FavoritesAction.isFavorite -> checkIsFavorite(action.characterId)
 
-                    _state.value =
-                        _state.value.copy(
-                            SuccessApiList = dtoList,
-                            isLoading = false,
+        }
+    }
+
+    private fun loadFavorites() = viewModelScope.launch {
+        _state.update {
+            it.copy(
+                state = StateView(isLoading = true)
+            )
+        }
+        try {
+            repository.getAllFavorites().collect { favoritesList ->
+                val dtoList: List<CharacterDto> = favoritesList.map { it.toDto() }
+
+                _state.update {
+                    it.copy(
+                        state = StateView(
+                            successApiList = dtoList,
+                            isLoading = false
                         )
-                }
-            } catch (e: Exception) {
-                _state.value =
-                    _state.value.copy(
-                        isLoading = false,
-                        isError = e.message ?: "Erro ao carregar favoritos",
                     )
+                }
+            }
+        } catch (e: Exception) {
+
+            _state.update {
+                it.copy(
+                    state = StateView(
+                        isError = e.message ?: "Erro ao carregar favoritos",
+                        isLoading = false
+                    )
+                )
             }
         }
+    }
 
-    fun toggleFavorite(character: CharacterData) =
+    private fun toggleFavorite(character: CharacterData) {
         viewModelScope.launch {
             val isFav = repository.isFavorite(character.id)
+
             if (isFav) {
                 repository.deleteFavorite(character.id)
             } else {
                 repository.insertFavorite(character)
             }
+            _state.update {
+                it.copy(isFavorite = !isFav)
+            }
             loadFavorites()
         }
+    }
 
-    suspend fun isFavorite(characterId: Int): Boolean =
-        try {
-            repository.isFavorite(characterId)
-        } catch (e: Exception) {
-            false
+    private fun checkIsFavorite(characterId: Int) {
+        viewModelScope.launch {
+            val favorite = try {
+                repository.isFavorite(characterId)
+            } catch (e: Exception) {
+                false
+            }
+            _state.update {
+                it.copy(isFavorite = favorite)
+            }
         }
+    }
+
 }

@@ -6,23 +6,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
+import com.example.therickandmorty.presentation.components.AppHeader
 import com.example.therickandmorty.presentation.components.characterListItem
 import com.example.therickandmorty.presentation.components.shimmerItem
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
@@ -35,21 +33,12 @@ object FavoriteScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel: FavoritesViewModel = koinViewModel()
 
-        val state by viewModel.state.collectAsStateWithLifecycle()
-
-        LaunchedEffect(Unit) {
-            viewModel.loadFavorites()
-        }
+        val uiState by viewModel.state.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = "Favorites",
-                            fontSize = 24.sp,
-                        )
-                    },
+                AppHeader(
+                    title = "Favorites"
                 )
             },
         ) { innerPadding ->
@@ -61,17 +50,17 @@ object FavoriteScreen : Screen {
                         .padding(16.dp),
             ) {
                 when {
-                    state.isLoading -> {
+                    uiState.state.isLoading -> {
                         shimmerItem()
                     }
-                    state.isError != null -> {
+                    uiState.state.isError != null -> {
                         Text(
-                            text = state.isError ?: "Erro desconhecido",
+                            text = uiState.state.isError ?: "Erro desconhecido",
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
-                    state.SuccessApiList.isEmpty() -> {
+                    uiState.state.successApiList.isEmpty() -> {
                         Text(
                             text = "Nenhum favorito encontrado",
                             modifier = Modifier.align(Alignment.Center),
@@ -79,7 +68,7 @@ object FavoriteScreen : Screen {
                     }
                     else -> {
                         favoriteList(
-                            characters = state.SuccessApiList,
+                            characters = uiState.state.successApiList,
                             onCharacterClick = { character ->
                                 navigator.push(CharacterDetailsScreen(character))
                             },

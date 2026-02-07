@@ -132,4 +132,7 @@ dependencies {
     testImplementation(libs.core.testing)
     androidTestImplementation(libs.runner)
     testImplementation(kotlin("test"))
+    testImplementation("androidx.paging:paging-testing:3.2.1")
+    testImplementation("app.cash.turbine:turbine:1.1.0")
+
 }

@@ -1,6 +1,5 @@
 package com.example.therickandmorty.presentation.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,33 +26,28 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Chip
-import androidx.wear.compose.material.ChipDefaults
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil.compose.AsyncImage
 import com.example.therickandmorty.data.local.extensions.toData
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
+import com.example.therickandmorty.presentation.components.AppHeader
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
+import com.example.therickandmorty.presentation.viewmodel.actions.FavoritesAction
 import org.koin.androidx.compose.koinViewModel
 
 data class CharacterDetailsScreen(
@@ -64,153 +59,148 @@ data class CharacterDetailsScreen(
         val navigator = LocalNavigator.currentOrThrow
         val favoritesViewModel: FavoritesViewModel = koinViewModel()
 
-        var isFavorite by remember { mutableStateOf(false) }
+        val state by favoritesViewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(character.id) {
-            isFavorite = favoritesViewModel.isFavorite(character.id)
+            favoritesViewModel.onAction(FavoritesAction.isFavorite(characterId = character.id))
         }
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text(text = "Character Details") },
-                    navigationIcon = {
-                        IconButton(onClick = { navigator.pop() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                        }
-                    },
+                AppHeader(
+                    title = "Character Details",
+                    showBack = true,
+                    onBackClick = { navigator.pop() },
                     actions = {
                         IconButton(
                             onClick = {
-                                favoritesViewModel.toggleFavorite(character.toData())
-                                isFavorite = !isFavorite
-                            },
+                                favoritesViewModel.onAction(
+                                    FavoritesAction.ToggleFavorite(
+                                        character = character.toData()
+                                    )
+                                )
+                            }
                         ) {
                             Icon(
                                 imageVector =
-                                    if (isFavorite) Icons.Default.Check else Icons.Default.Add,
-                                contentDescription = if (isFavorite) "Favorito" else "Não favorito",
-                                tint = MaterialTheme.colorScheme.primary,
+                                    if (state.isFavorite) Icons.Default.Check else Icons.Default.Add,
+                                contentDescription = if (state.isFavorite) "Favorito" else "Não favorito",
+                                tint = Color.Black
                             )
                         }
-                    },
-                )
-            },
-        ) { innerPadding ->
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .verticalScroll(rememberScrollState())
-                        .background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                val painter =
-                    rememberAsyncImagePainter(
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(character.image)
-                            .crossfade(true)
-                            .build(),
-                    )
-                Image(
-                    painter = painter,
-                    contentDescription = character.name,
-                    modifier =
-                        Modifier
-                            .size(300.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .shadow(8.dp, RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentScale = ContentScale.Crop,
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = character.name,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 30.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Card(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .shadow(4.dp, RoundedCornerShape(16.dp)),
-                    shape = RoundedCornerShape(16.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        ),
-                ) {
-                    Column(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Chip(
-                                onClick = {},
-                                colors =
-                                    ChipDefaults.chipColors(
-                                        backgroundColor =
-                                            when (character.status.lowercase()) {
-                                                "alive" -> Color.Green
-                                                "dead" -> Color.Red
-                                                else -> MaterialTheme.colorScheme.tertiary
-                                            },
-                                    ),
-                                label = {
-                                    Text(
-                                        text = character.status,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                },
-                            )
-
-                            if (character.type.isNotEmpty()) {
-                                Chip(
-                                    onClick = {},
-                                    colors =
-                                        ChipDefaults.chipColors(
-                                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                                        ),
-                                    label = { Text(character.type) },
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            "Species: ${character.species}",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            "Gender: ${character.gender}",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                        )
                     }
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
+                )
             }
+        ) { innerPadding ->
+            CharacterDetailsContent(
+                modifier = Modifier
+                    .padding(top = innerPadding.calculateTopPadding()),
+                character = character,
+            )
         }
     }
 }
+
+@Composable
+fun CharacterDetailsContent(
+    modifier: Modifier = Modifier,
+    character: CharacterDto,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        AsyncImage(
+            model = character.image,
+            contentDescription = character.name,
+            modifier = Modifier
+                .size(280.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(8.dp),
+            contentScale = ContentScale.Crop,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = character.name,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.ExtraBold,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        DetailsCard(character = character)
+
+        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+fun DetailsCard(character: CharacterDto) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AssistChip(
+                    onClick = {},
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor =
+                            when (character.status.lowercase()) {
+                                "alive" -> Color.Green
+                                "dead" -> Color.Red
+                                else -> MaterialTheme.colorScheme.tertiary
+                            },
+                    ),
+                    label = {
+                        Text(
+                            text = character.status,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    },
+                )
+
+                if (character.type.isNotEmpty()) {
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(character.type) },
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            Text(
+                "Species: ${character.species}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Gender: ${character.gender}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+    }
+}
+

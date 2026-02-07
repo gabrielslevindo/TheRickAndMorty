@@ -2,22 +2,43 @@ package com.example.therickandmorty.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.repository.CharacterRepository
-import com.example.therickandmorty.presentation.paging.CharacterPagingSource
-import kotlinx.coroutines.flow.Flow
+import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.presentation.viewmodel.states.CharacterListState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlin.time.Duration.Companion.seconds
 
 class CharacterListViewModel(
-    private val repository: CharacterRepository,
+    private val loadListUseCaseInt: LoadListUseCaseInt
 ) : ViewModel() {
-    val charactersFlow: Flow<PagingData<CharacterDto>> =
-        Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { CharacterPagingSource(repository) },
-        ).flow
-            .cachedIn(viewModelScope)
+
+    private val _state = MutableStateFlow(CharacterListState())
+    val state: StateFlow<CharacterListState> = _state.onStart {
+        loadCharacters()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeout = 5.seconds),
+        initialValue = CharacterListState()
+    )
+
+    private fun loadCharacters() {
+        val charactersFlow =
+            loadListUseCaseInt
+                .execute(
+                    name = null,
+                    status = null
+                )
+                .cachedIn(viewModelScope)
+
+        _state.update {
+            it.copy(characters = charactersFlow)
+        }
+    }
+
 }
