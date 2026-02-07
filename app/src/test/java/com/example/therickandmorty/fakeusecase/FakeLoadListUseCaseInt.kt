@@ -2,7 +2,7 @@ package com.example.therickandmorty.fakeusecase
 
 import androidx.paging.PagingData
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.model.usecase.LoadListUseCaseInt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

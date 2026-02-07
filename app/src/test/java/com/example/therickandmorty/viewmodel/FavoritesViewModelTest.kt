@@ -1,16 +1,13 @@
 package com.example.therickandmorty.viewmodel
 
-import com.example.therickandmorty.domain.dataclass.CharacterData
+import com.example.therickandmorty.model.dataclass.CharacterData
 import com.example.therickandmorty.fakerepository.FakeCharacterRepository
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.actions.FavoritesAction
-import io.mockk.coEvery
-import io.mockk.every
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain

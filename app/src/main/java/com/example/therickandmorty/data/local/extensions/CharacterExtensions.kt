@@ -1,7 +1,7 @@
 package com.example.therickandmorty.data.local.extensions
 
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.dataclass.CharacterData
+import com.example.therickandmorty.model.dataclass.CharacterData
 
 fun CharacterDto.toData(): CharacterData =
     CharacterData(

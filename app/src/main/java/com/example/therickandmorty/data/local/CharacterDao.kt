@@ -3,7 +3,7 @@ package com.example.therickandmorty.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.therickandmorty.domain.dataclass.CharacterData
+import com.example.therickandmorty.model.dataclass.CharacterData
 import kotlinx.coroutines.flow.Flow
 
 @Dao

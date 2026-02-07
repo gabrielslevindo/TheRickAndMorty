@@ -1,9 +1,9 @@
-package com.example.therickandmorty.domain.repository
+package com.example.therickandmorty.model.repository
 
 import com.example.therickandmorty.data.local.CharacterDao
 import com.example.therickandmorty.data.remote.CharacterApi
 import com.example.therickandmorty.data.remote.dtos.CharacterResponseDto
-import com.example.therickandmorty.domain.dataclass.CharacterData
+import com.example.therickandmorty.model.dataclass.CharacterData
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {

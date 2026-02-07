@@ -3,7 +3,7 @@ package com.example.therickandmorty.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.model.usecase.LoadListUseCaseInt
 import com.example.therickandmorty.presentation.viewmodel.states.CharacterListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,8 +19,7 @@ class CharacterListViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(CharacterListState())
     val state: StateFlow<CharacterListState> =
-        _state
-            .onStart {
+        _state.onStart {
                 loadCharacters()
             }.stateIn(
                 scope = viewModelScope,

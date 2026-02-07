@@ -1,6 +1,6 @@
 package com.example.therickandmorty.presentation.viewmodel.actions
 
-import com.example.therickandmorty.domain.dataclass.CharacterData
+import com.example.therickandmorty.model.dataclass.CharacterData
 
 sealed interface FavoritesAction {
     data class ToggleFavorite(

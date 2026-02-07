@@ -3,7 +3,7 @@ package com.example.therickandmorty.presentation.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.repository.CharacterRepository
+import com.example.therickandmorty.model.repository.CharacterRepository
 
 class CharacterPagingSource(
     private val repository: CharacterRepository,

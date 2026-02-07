@@ -4,10 +4,10 @@ import androidx.room.Room
 import com.example.therickandmorty.data.local.AppDatabase
 import com.example.therickandmorty.data.remote.ApiService
 import com.example.therickandmorty.data.remote.CharacterApi
-import com.example.therickandmorty.domain.repository.CharacterRepository
-import com.example.therickandmorty.domain.repository.CharacterRepositoryImpl
-import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
-import com.example.therickandmorty.domain.usecase.LoadListUseCaseIntImpl
+import com.example.therickandmorty.model.repository.CharacterRepository
+import com.example.therickandmorty.model.repository.CharacterRepositoryImpl
+import com.example.therickandmorty.model.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.model.usecase.LoadListUseCaseIntImpl
 import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.SearchViewModel

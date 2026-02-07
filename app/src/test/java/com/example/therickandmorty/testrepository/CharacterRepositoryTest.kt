@@ -5,8 +5,8 @@ import com.example.therickandmorty.data.remote.CharacterApi
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
 import com.example.therickandmorty.data.remote.dtos.CharacterResponseDto
 import com.example.therickandmorty.data.remote.dtos.InfoDto
-import com.example.therickandmorty.domain.dataclass.CharacterData
-import com.example.therickandmorty.domain.repository.CharacterRepositoryImpl
+import com.example.therickandmorty.model.dataclass.CharacterData
+import com.example.therickandmorty.model.repository.CharacterRepositoryImpl
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.clearAllMocks

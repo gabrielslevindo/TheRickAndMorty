@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.therickandmorty.domain.usecase.LoadListUseCaseInt
+import com.example.therickandmorty.model.usecase.LoadListUseCaseInt
 import com.example.therickandmorty.presentation.viewmodel.actions.SearchAction
 import com.example.therickandmorty.presentation.viewmodel.states.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow

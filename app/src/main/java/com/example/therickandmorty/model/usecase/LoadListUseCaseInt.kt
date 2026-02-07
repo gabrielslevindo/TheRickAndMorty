@@ -1,10 +1,10 @@
-package com.example.therickandmorty.domain.usecase
+package com.example.therickandmorty.model.usecase
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
-import com.example.therickandmorty.domain.repository.CharacterRepository
+import com.example.therickandmorty.model.repository.CharacterRepository
 import com.example.therickandmorty.presentation.paging.CharacterPagingSource
 import kotlinx.coroutines.flow.Flow
 

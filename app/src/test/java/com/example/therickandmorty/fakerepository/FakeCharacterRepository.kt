@@ -1,8 +1,8 @@
 package com.example.therickandmorty.fakerepository
 
 import com.example.therickandmorty.data.remote.dtos.CharacterResponseDto
-import com.example.therickandmorty.domain.dataclass.CharacterData
-import com.example.therickandmorty.domain.repository.CharacterRepository
+import com.example.therickandmorty.model.dataclass.CharacterData
+import com.example.therickandmorty.model.repository.CharacterRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

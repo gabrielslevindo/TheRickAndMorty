@@ -1,4 +1,4 @@
-package com.example.therickandmorty.domain.dataclass
+package com.example.therickandmorty.model.dataclass
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
