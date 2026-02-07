@@ -1,0 +1,38 @@
+name: 🐞 Bug report
+description: Reporte um problema encontrado no app
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: 🐛 Descrição do bug
+      description: Explique claramente o problema
+      placeholder: Ao acessar a tela X, o app fecha inesperadamente...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🔁 Passos para reproduzir
+      description: Liste os passos
+      placeholder: |
+        1. Abrir o app
+        2. Ir para a tela X
+        3. Clicar no botão Y
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: ✅ Comportamento esperado
+      placeholder: O app deveria exibir...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 📱 Ambiente
+      placeholder: |
+        - Android versão:
+        - Dispositivo:
+        - Versão do app:

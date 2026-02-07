@@ -1,0 +1,24 @@
+name: ✨ Feature request
+description: Sugira uma nova funcionalidade
+title: "[Feature] "
+labels: ["feature"]
+body:
+  - type: textarea
+    attributes:
+      label: 🚀 Descrição da feature
+      description: Explique a ideia
+      placeholder: Seria interessante adicionar...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🎯 Problema que resolve
+      placeholder: Atualmente o usuário precisa...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 💡 Solução sugerida
+      placeholder: Poderíamos resolver isso fazendo...
