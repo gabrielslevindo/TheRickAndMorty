@@ -2,8 +2,8 @@ package com.example.therickandmorty.testusecase
 
 import androidx.paging.PagingData
 import androidx.paging.testing.asSnapshot
-import com.example.therickandmorty.model.usecase.LoadListUseCaseIntImpl
 import com.example.therickandmorty.fakerepository.FakeCharacterRepository
+import com.example.therickandmorty.model.usecase.LoadListUseCaseIntImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest

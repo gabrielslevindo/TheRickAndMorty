@@ -22,7 +22,9 @@ class FavoritesViewModel(
     private val repository: CharacterRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(FavoritesState())
-    val state = _state.onStart {
+    val state =
+        _state
+            .onStart {
                 loadFavorites()
             }.stateIn(
                 scope = viewModelScope,

@@ -1,7 +1,7 @@
 package com.example.therickandmorty.viewmodel
 
-import com.example.therickandmorty.model.dataclass.CharacterData
 import com.example.therickandmorty.fakerepository.FakeCharacterRepository
+import com.example.therickandmorty.model.dataclass.CharacterData
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.actions.FavoritesAction
 import kotlinx.coroutines.Dispatchers

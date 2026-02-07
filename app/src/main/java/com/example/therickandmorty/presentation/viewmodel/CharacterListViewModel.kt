@@ -19,7 +19,8 @@ class CharacterListViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(CharacterListState())
     val state: StateFlow<CharacterListState> =
-        _state.onStart {
+        _state
+            .onStart {
                 loadCharacters()
             }.stateIn(
                 scope = viewModelScope,
