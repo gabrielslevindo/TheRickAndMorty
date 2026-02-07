@@ -1,0 +1,32 @@
+build:
+  maxIssues: 0
+
+style:
+  MagicNumber:
+    active: false
+
+  WildcardImport:
+    active: false
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 120
+    excludes:
+      - "**/presentation/screens/**"
+      - "**/presentation/components/**"
+
+  LargeClass:
+    active: true
+    threshold: 600
+
+naming:
+  FunctionNaming:
+    active: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+
+  SwallowedException:
+    active: false
