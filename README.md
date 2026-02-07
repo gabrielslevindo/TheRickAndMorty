@@ -1,26 +1,33 @@
-# Rick & Morty App
+# 🛸 Rick & Morty Android App
 
-Aplicativo Android desenvolvido com **Jetpack Compose, Coroutines, Retrofit, Koin, Room, Voyager e Paging 3**.  
-Ele consome a API pública do Rick & Morty, permite listar personagens, visualizar detalhes e marcar favoritos localmente.
+Aplicativo Android moderno desenvolvido com **Jetpack Compose**, focado em **qualidade de código, arquitetura limpa, testes automatizados e CI**.
+
+O app consome a **API pública do Rick & Morty**, permitindo listar personagens, aplicar filtros, visualizar detalhes e gerenciar favoritos com persistência local.
+
+Este projeto foi evoluído com foco em **boas práticas profissionais**, simulando um ambiente real de produção.
 
 ---
 
 ## 🌟 Funcionalidades
 
-- 📋 **Lista de personagens** com nome e imagem  
-- 🔍 **Filtros** por nome e status do personagem  
-- 📌 **Tela de detalhes** com informações: species, gender, type  
-- ⭐ **Favoritos**: marcar e desmarcar personagens favoritos  
-- 🧱 **Persistência local** usando Room Database  
-- ⚡ **Paginação** para carregar personagens de forma eficiente  
-- 🧪 **Testes unitários** para repository e viewmodels
-- ✅ Lint Kotlin: o projeto respeita todas as regras do Lint usando kotlinter, incluindo convenções de nomenclatura. As funções @Composable estão com letras minúsculas conforme recomendado pelo Compose para se adequar às regras do Lint.
+- 📋 **Lista paginada de personagens** com nome, imagem e status
+- 🔍 **Busca por nome** em tempo real
+- 🎯 **Filtro por status** (Alive, Dead, Unknown)
+- 📄 **Tela de detalhes** com informações completas do personagem
+- ⭐ **Sistema de favoritos** com persistência local (Room)
+- 📭 **Estado vazio amigável** (ex: *“Busque por algum personagem”*)
+- ⚡ **Paginação eficiente** com Paging 3
+- 🧪 **Cobertura robusta de testes unitários**
+- 🤖 **CI automatizado com GitHub Actions**
+- 📊 **Cobertura de testes validada com JaCoCo**
+- 🧹 **Análise estática de código com Detekt**
+- ✅ **Lint Kotlin 100% validado (kotlinter)**
 
 ---
 
 ## 🧱 Arquitetura
 
-O projeto segue a **Clean Architecture** com separação clara de responsabilidades:
+O projeto segue **Clean Architecture**, com separação clara de responsabilidades, alta testabilidade e baixo acoplamento.
 
 ```
 presentation/
@@ -40,6 +47,27 @@ data/
 
 
 ---
+
+
+### 📁 Estrutura de módulos
+
+```
+presentation/
+├── screens/ -> UI com Jetpack Compose
+├── components/ -> Componentes reutilizáveis
+├── states/ -> Estados de tela
+├── actions/ -> Eventos da UI
+└── viewmodel/ -> ViewModels com StateFlow
+domain/
+├── dataclass/ -> Entidades de domínio
+├── repository/ -> Contratos (interfaces)
+└── usecase/ -> Casos de uso
+data/
+├── local/ -> Room (DAO, Entities)
+├── remote/ -> Retrofit + DTOs
+├── paging/ -> PagingSource
+└── repository/ -> Implementações concretas
+```
 
 ## 📄 Resumo das Classes
 
@@ -77,6 +105,64 @@ data/
 
 ---
 
+### 🎯 Principais decisões arquiteturais
+
+- **Domain desacoplado** de frameworks Android
+- **DTOs separados das entidades de domínio**
+- **UseCases** para regras de negócio
+- **ViewModels finos**, focados apenas em orquestrar estado
+- **PagingSource isolado** para facilitar testes
+- **FakeRepository e FakeUseCase** para testes determinísticos
+
+---
+
+## 🧪 Testes & Qualidade
+
+### ✅ Testes Unitários
+
+- ViewModels
+- Repositórios
+- Casos de uso
+- PagingSource (cenários de sucesso e erro)
+
+Ferramentas utilizadas:
+- JUnit
+- MockK
+- Coroutine Test
+- Turbine / Flow testing
+
+### 📊 Cobertura de Testes (JaCoCo)
+
+- Relatórios HTML gerados automaticamente
+- Validação de cobertura mínima no build
+- Integrado ao **CI**
+
+### 🧹 Qualidade de Código
+
+- **Detekt** com regras customizadas
+- **Kotlinter** garantindo padrão oficial Kotlin
+- Build falha automaticamente se regras forem violadas
+
+---
+
+## 🤖 CI – GitHub Actions
+
+Pipeline 100% gratuito configurado com:
+
+- ✅ Setup do Java 17
+- 🧪 Execução de testes unitários
+- 🧹 Lint Kotlin
+- 📊 Relatório de cobertura JaCoCo
+- 🔍 Análise estática com Detekt
+- 📦 Build do APK Debug
+- 📤 Upload de artefatos (relatórios)
+
+Tudo isso roda automaticamente em:
+- `push`
+- `pull_request`
+
+---
+
 ## 🔧 Instalação e Execução
 
 Pré-requisitos:
@@ -101,10 +187,12 @@ Run ▶️
 ***Comandos Gradle funcionais:***
 
 ```
-
 ./gradlew build
-./gradlew connectedCheck
-./gradlew lintKotlin
+./gradlew testDebugUnitTest
+./gradlew lint
+./gradlew detekt
+./gradlew jacocoTestReport
+
 
 ```
 
