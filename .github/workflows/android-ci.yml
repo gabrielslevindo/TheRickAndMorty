@@ -10,17 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout do código
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup do Java
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
+      # 3️⃣ Permissão do Gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests
+      # 4️⃣ Testes unitários
+      - name: Run unit tests
         run: ./gradlew testDebugUnitTest
+
+      # 5️⃣ Lint (qualidade de código)
+      - name: Run lint
+        run: ./gradlew lint
+
+      # 6️⃣ Gerar relatório JaCoCo
+      - name: Generate JaCoCo report
+        run: ./gradlew jacocoTestReport jacocoTestCoverageVerification
+
+      # 7️⃣ Upload do relatório HTML
+      - name: Upload JaCoCo HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: app/build/reports/jacoco/jacocoTestReport/html
+
+      # 8️⃣ Build do app
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
