@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -90,5 +91,27 @@ fun characterListItem(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun characterListItemPreview() {
+    MaterialTheme {
+        val character =
+            CharacterDto(
+                id = 1,
+                name = "Rick Sanchez",
+                status = "Alive",
+                species = "Human",
+                image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+                gender = "Male",
+                type = "type",
+            )
+
+        characterListItem(
+            character = character,
+            onItemClick = {},
+        )
     }
 }

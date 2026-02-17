@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -53,4 +54,12 @@ fun shimmerItem() {
                 .height(80.dp)
                 .background(brush = brush, shape = RoundedCornerShape(8.dp)),
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun shimmerItemPreview() {
+    MaterialTheme {
+        shimmerItem()
+    }
 }

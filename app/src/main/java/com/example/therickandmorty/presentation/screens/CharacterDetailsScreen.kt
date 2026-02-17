@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -205,5 +206,26 @@ fun detailsCard(character: CharacterDto) {
                 fontWeight = FontWeight.Medium,
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun characterDetailsContentPreview() {
+    MaterialTheme {
+        val character =
+            CharacterDto(
+                id = 1,
+                name = "Rick Sanchez",
+                status = "Alive",
+                species = "Human",
+                gender = "Male",
+                type = "Scientist",
+                image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            )
+
+        characterDetailsContent(
+            character = character,
+        )
     }
 }

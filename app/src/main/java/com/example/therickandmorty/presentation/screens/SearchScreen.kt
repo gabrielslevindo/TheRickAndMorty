@@ -19,13 +19,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.example.therickandmorty.data.remote.dtos.CharacterDto
 import com.example.therickandmorty.presentation.components.appHeader
 import com.example.therickandmorty.presentation.components.characterList
 import com.example.therickandmorty.presentation.components.nameFilterField
@@ -34,6 +37,7 @@ import com.example.therickandmorty.presentation.components.statusFilter
 import com.example.therickandmorty.presentation.viewmodel.SearchViewModel
 import com.example.therickandmorty.presentation.viewmodel.actions.SearchAction
 import com.example.therickandmorty.presentation.viewmodel.states.SearchState
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 
 object SearchScreen : Screen {
@@ -42,10 +46,15 @@ object SearchScreen : Screen {
     override fun Content() {
         val viewModel: SearchViewModel = koinViewModel()
 
+        val navigator = LocalNavigator.currentOrThrow
+
         val state by viewModel.state.collectAsStateWithLifecycle()
         searchScreenContent(
             state = state,
             action = viewModel::onAction,
+            onCharacterClick = {
+                navigator.push(CharacterDetailsScreen(it))
+            },
         )
     }
 }
@@ -54,25 +63,28 @@ object SearchScreen : Screen {
 fun searchScreenContent(
     state: SearchState,
     action: (SearchAction) -> Unit,
+    onCharacterClick: (CharacterDto) -> Unit,
 ) {
-    val navigator = LocalNavigator.currentOrThrow
-
     var nameFilter by remember {
         mutableStateOf(state.name ?: "")
     }
+
     var selectedStatusFilter by remember {
         mutableStateOf(state.status ?: "")
     }
 
-    val characterStatusList = listOf("Alive", "Dead", "Unknown")
+    val characterStatusList =
+        listOf("Alive", "Dead", "Unknown")
 
-    val characters = state.characters.collectAsLazyPagingItems()
+    val characters =
+        state.characters.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
             appHeader(title = "Characters")
         },
     ) { innerPadding ->
+
         Column(
             modifier =
                 Modifier
@@ -82,17 +94,30 @@ fun searchScreenContent(
         ) {
             nameFilterField(
                 value = nameFilter,
-                onValueChange = { newName ->
-                    nameFilter = newName
-                    action(SearchAction.ApplyFilters(name = nameFilter, status = selectedStatusFilter))
+                onValueChange = {
+                    nameFilter = it
+
+                    action(
+                        SearchAction.ApplyFilters(
+                            name = nameFilter,
+                            status = selectedStatusFilter,
+                        ),
+                    )
                 },
             )
+
             statusFilter(
                 statuses = characterStatusList,
                 selectedStatus = selectedStatusFilter,
-                onStatusSelected = { status ->
-                    selectedStatusFilter = status
-                    action(SearchAction.ApplyFilters(name = nameFilter, status = selectedStatusFilter))
+                onStatusSelected = {
+                    selectedStatusFilter = it
+
+                    action(
+                        SearchAction.ApplyFilters(
+                            name = nameFilter,
+                            status = selectedStatusFilter,
+                        ),
+                    )
                 },
             )
 
@@ -102,31 +127,75 @@ fun searchScreenContent(
                 modifier =
                     Modifier
                         .padding(top = 8.dp)
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .background(MaterialTheme.colorScheme.background),
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 24.dp,
+                                topEnd = 24.dp,
+                            ),
+                        ).background(MaterialTheme.colorScheme.background),
             ) {
                 when {
                     characters.loadState.refresh is LoadState.Loading -> {
                         shimmerItem()
                     }
+
                     characters.loadState.refresh is LoadState.Error -> {
-                        val e = characters.loadState.refresh as LoadState.Error
+                        val e =
+                            characters.loadState.refresh as LoadState.Error
+
                         Text(
                             text = e.error.message ?: "Unknown error",
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
+
                     else -> {
                         characterList(
                             isPaged = true,
                             pagedCharacters = characters,
-                        ) { character ->
-                            navigator.push(CharacterDetailsScreen(character))
-                        }
+                            onItemClick = onCharacterClick,
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun searchScreenPreview() {
+    MaterialTheme {
+        val previewCharacters =
+            flowOf(
+                PagingData.from(
+                    List(10) { index ->
+
+                        CharacterDto(
+                            id = index,
+                            name = "Character $index",
+                            image = "",
+                            status = "Alive",
+                            species = "Human",
+                            gender = "Male",
+                            type = "",
+                        )
+                    },
+                ),
+            )
+
+        val previewState =
+            SearchState(
+                name = "",
+                status = "",
+                characters = previewCharacters,
+            )
+
+        searchScreenContent(
+            state = previewState,
+            action = {},
+            onCharacterClick = {},
+        )
     }
 }

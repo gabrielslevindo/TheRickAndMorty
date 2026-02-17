@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun characterList(
@@ -63,5 +68,36 @@ fun characterList(
                 characterListItem(character = character, onItemClick = onItemClick)
             }
         }
+    }
+}
+
+@Composable
+fun emptyPagingItems(): LazyPagingItems<CharacterDto> =
+    flowOf(PagingData.empty<CharacterDto>())
+        .collectAsLazyPagingItems()
+
+@Preview
+@Composable
+fun characterListPreview() {
+    MaterialTheme {
+        val previewCharacters =
+            List(10) { index ->
+                CharacterDto(
+                    id = index,
+                    name = "Character $index",
+                    image = "",
+                    status = "Alive",
+                    species = "Human",
+                    gender = "Male",
+                    type = "",
+                )
+            }
+
+        characterList(
+            isPaged = false,
+            pagedCharacters = emptyPagingItems(),
+            listCharacters = previewCharacters,
+            onItemClick = {},
+        )
     }
 }
