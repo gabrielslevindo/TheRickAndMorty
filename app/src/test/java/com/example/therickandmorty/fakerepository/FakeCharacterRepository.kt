@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeCharacterRepository : CharacterRepository {
     var shouldThrowOnGetAllFavorites = false
-    var getAllFavoritesException: RuntimeException? = null
+    var getAllFavoritesException: Exception? = null
 
     private val favorites = mutableListOf<CharacterData>()
 
@@ -108,5 +108,11 @@ class FakeCharacterRepository : CharacterRepository {
 
     override suspend fun isFavorite(characterId: Int): Boolean = favorites.any { it.id == characterId }
 
-    override suspend fun getAllFavorites(): Flow<List<CharacterData>> = flowOf(favorites)
+    override suspend fun getAllFavorites(): Flow<List<CharacterData>> {
+        if (shouldThrowOnGetAllFavorites) {
+            throw getAllFavoritesException ?: Exception("Fake error")
+        }
+
+        return flowOf(favorites)
+    }
 }
