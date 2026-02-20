@@ -2,6 +2,8 @@ package com.example.therickandmorty.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.therickandmorty.core.domain.DataError
+import com.example.therickandmorty.core.domain.DataException
 import com.example.therickandmorty.data.local.extensions.toDto
 import com.example.therickandmorty.data.remote.dtos.CharacterDto
 import com.example.therickandmorty.model.dataclass.CharacterData
@@ -60,12 +62,34 @@ class FavoritesViewModel(
                         )
                     }
                 }
+            } catch (e: DataException) {
+                val message =
+                    when (e.error) {
+                        DataError.Local.DISK_FULL ->
+                            "Espaço insuficiente no dispositivo"
+
+                        DataError.Local.UNKNOWN ->
+                            "Erro ao acessar o banco de dados"
+
+                        else ->
+                            "Erro desconhecido"
+                    }
+
+                _state.update {
+                    it.copy(
+                        state =
+                            StateView(
+                                isError = message,
+                                isLoading = false,
+                            ),
+                    )
+                }
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         state =
                             StateView(
-                                isError = e.message ?: "Erro ao carregar favoritos",
+                                isError = "Erro inesperado",
                                 isLoading = false,
                             ),
                     )

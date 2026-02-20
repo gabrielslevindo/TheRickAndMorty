@@ -1,5 +1,7 @@
 package com.example.therickandmorty.viewmodel
 
+import com.example.therickandmorty.core.domain.DataError
+import com.example.therickandmorty.core.domain.DataException
 import com.example.therickandmorty.fakerepository.FakeCharacterRepository
 import com.example.therickandmorty.model.dataclass.CharacterData
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
@@ -75,19 +77,24 @@ class FavoritesViewModelTest {
     }
 
     @Test
-    fun `loadFavorites should update state with error when runtime exception happens`() {
+    fun `loadFavorites should update state with error when DataException occurs`() =
         runTest {
             repository.shouldThrowOnGetAllFavorites = true
-            repository.getAllFavoritesException = RuntimeException("Erro ao carregar favoritos")
+            repository.getAllFavoritesException =
+                DataException(DataError.Local.UNKNOWN)
 
             dispatcher.scheduler.advanceUntilIdle()
 
-            val finalState = viewModel.state.map { it.state }.first { !it.isLoading }
+            val finalState =
+                viewModel.state
+                    .map { it.state }
+                    .first { !it.isLoading }
 
-            assertEquals(null, finalState.isError)
-            assertFalse(finalState.isLoading)
+            assertEquals(
+                "Erro ao acessar o banco de dados",
+                finalState.isError,
+            )
         }
-    }
 
     @Test
     fun `toggleFavorite should insert favorite when not already favorite`() {
