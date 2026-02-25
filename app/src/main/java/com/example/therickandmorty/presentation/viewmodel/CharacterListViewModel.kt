@@ -21,6 +21,7 @@ class CharacterListViewModel(
     val state: StateFlow<CharacterListState> =
         _state
             .onStart {
+
                 loadCharacters()
             }.stateIn(
                 scope = viewModelScope,
