@@ -1,5 +1,9 @@
 package com.example.therickandmorty.model.repository
 
+import com.example.therickandmorty.core.data.safeApiCall
+import com.example.therickandmorty.core.domain.DataError
+import com.example.therickandmorty.core.domain.DataException
+import com.example.therickandmorty.core.domain.Result
 import com.example.therickandmorty.data.local.CharacterDao
 import com.example.therickandmorty.data.remote.CharacterApi
 import com.example.therickandmorty.data.remote.dtos.CharacterResponseDto
@@ -28,23 +32,63 @@ class CharacterRepositoryImpl(
     private val characterApi: CharacterApi,
     private val characterDao: CharacterDao,
 ) : CharacterRepository {
-    override suspend fun getCharacters(page: Int): CharacterResponseDto = characterApi.getCharacters(page)
+    override suspend fun getCharacters(page: Int): CharacterResponseDto =
+        when (
+            val result =
+                safeApiCall {
+                    characterApi.getCharacters(page)
+                }
+        ) {
+            is Result.Success -> {
+                result.data
+            }
+
+            is Result.Error -> throw DataException(result.error)
+        }
 
     override suspend fun getFilteredCharacters(
         page: Int?,
         name: String?,
         status: String?,
-    ): CharacterResponseDto = characterApi.getFilteredCharacters(page, name, status)
+    ): CharacterResponseDto =
+        when (
+            val result =
+                safeApiCall {
+                    characterApi.getFilteredCharacters(page, name, status)
+                }
+        ) {
+            is Result.Success -> result.data
+
+            is Result.Error -> throw DataException(result.error)
+        }
 
     override suspend fun insertFavorite(character: CharacterData) {
-        characterDao.insertCharacter(character)
+        try {
+            characterDao.insertCharacter(character)
+        } catch (e: Exception) {
+            throw DataException(DataError.Local.UNKNOWN)
+        }
     }
 
     override suspend fun deleteFavorite(characterId: Int) {
-        characterDao.deleteCharacterById(characterId)
+        try {
+            characterDao.deleteCharacterById(characterId)
+        } catch (e: Exception) {
+            throw DataException(DataError.Local.UNKNOWN)
+        }
     }
 
-    override suspend fun isFavorite(characterId: Int): Boolean = characterDao.getCharacterById(characterId) != null
+    override suspend fun isFavorite(characterId: Int): Boolean =
+        try {
+            characterDao.getCharacterById(characterId) != null
+        } catch (e: Exception) {
+            throw DataException(DataError.Local.UNKNOWN)
+        }
 
-    override suspend fun getAllFavorites(): Flow<List<CharacterData>> = characterDao.getAllFavorites()
+    override suspend fun getAllFavorites(): Flow<List<CharacterData>> =
+        try {
+            characterDao.getAllFavorites()
+        } catch (e: Exception) {
+            throw DataException(DataError.Local.UNKNOWN)
+        }
 }
