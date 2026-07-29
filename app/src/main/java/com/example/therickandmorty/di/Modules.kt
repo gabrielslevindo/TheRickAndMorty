@@ -12,6 +12,7 @@ import com.example.therickandmorty.presentation.viewmodel.CharacterListViewModel
 import com.example.therickandmorty.presentation.viewmodel.FavoritesViewModel
 import com.example.therickandmorty.presentation.viewmodel.SearchViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val modules =
@@ -39,7 +40,7 @@ val modules =
             )
         }
 
-        factory { CharacterListViewModel(loadListUseCaseInt = get()) }
-        factory { SearchViewModel(loadListUseCaseInt = get()) }
-        factory { FavoritesViewModel(repository = get()) }
+        viewModel { CharacterListViewModel(loadListUseCaseInt = get()) }
+        viewModel { SearchViewModel(loadListUseCaseInt = get()) }
+        viewModel { FavoritesViewModel(repository = get()) }
     }
