@@ -5,7 +5,8 @@ plugins {
     kotlin("kapt")
     id("org.jmailen.kotlinter") version "5.2.0"
     id("jacoco")
-        id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 detekt {
@@ -106,13 +107,13 @@ dependencies {
 
     //retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.converter.kotlinx.serialization)
 
     //coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android.v171)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.kotlinx.coroutines.android.v171)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //serialization
     implementation(libs.kotlinx.serialization.json)
@@ -137,15 +138,15 @@ dependencies {
     testImplementation(libs.mockk.android)
 
     //paggin 3.0
-    implementation (libs.androidx.paging.runtime)
-    implementation (libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     //room
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
 
-    implementation (libs.okhttp)
-    implementation (libs.logging.interceptor)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
